@@ -1,6 +1,9 @@
 #include <stdio.h>
+#include "Parser.h"
 
 int main(){
-    printf("Hello, C!\n");
+
+    hello();
+
     return 0;
 }

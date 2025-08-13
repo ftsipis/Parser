@@ -1,9 +1,8 @@
-#include <stdio.h>
 #include "Parser.h"
 
 int main(){
 
-    hello();
+    parser();
 
     return 0;
 }

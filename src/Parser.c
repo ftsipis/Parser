@@ -1,26 +1,48 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "Modules.h"
+
 
 void parser() {
     char dir[256] = "/home/fotis/C/Parser/docs/";                              // The docs directory
     char ending[] = "_mapped.txt";                                             // The ending of the .txt                            
     char file[64], fullpath[512];                                              // File is the string needed for the parser e.g. s27
 
-    /*Creting the path for the .txt file*/
+    /*Creating the path for the .txt file*/
     printf("Type the starting string of the .txt file: ");
     scanf("%s", file);
     snprintf(fullpath, sizeof(fullpath), "%s%s%s", dir, file, ending);
-    
+
+    /*Open the file*/
     FILE *fpointer = fopen(fullpath, "r");
 
-    char line[256];
-    char *word;
+    char line[256];                                                             // The line we read each time
+    const char *delim =" ,;";                                                   // Characters for line seperation
+    char *token;                                                                // The word saved each time from the line
+    char tmp[sizeof line];                                                      // tmp = line because strtok change the value of the first parameter and line shouldn't be changed
 
+    /*Creation of the necessary structs*/
     while (fgets(line, sizeof(line), fpointer)) {
-        word = strtok(line, " ");
-        if (!strcmp(word, "input")) {
-            printf("%s\n", word);
+        strcpy(tmp, line);
+        token = strtok(tmp, delim);
+        if (!strcmp(token, "input")) {
+            while( token != NULL ) {
+                printf( " %s\n", token ); 
+                token = strtok(NULL, delim);
+            }
+        } else if (!strcmp(token, "output")) {
+            while( token != NULL ) {
+                printf( " %s\n", token ); 
+                token = strtok(NULL, delim);
+            }
+        } else if (!strcmp(token, "wire")) {
+            while( token != NULL ) {
+                printf( " %s\n", token ); 
+                token = strtok(NULL, delim);
+            }
         }
     }
+
+
 }

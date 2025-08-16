@@ -27,18 +27,25 @@ void parser() {
         strcpy(tmp, line);
         token = strtok(tmp, delim);
         if (!strcmp(token, "input")) {
+            token = strtok(NULL, delim);
             while( token != NULL ) {
-                printf( " %s\n", token ); 
-                token = strtok(NULL, delim);
+                if (strcmp(token, "VDD") == 0 || strcmp(token, "GND") == 0 || strcmp(token, "CK") == 0) {
+                   token = strtok(NULL, delim); 
+                } else {
+                    printf( "%s ", token ); 
+                    token = strtok(NULL, delim);
+                }
             }
         } else if (!strcmp(token, "output")) {
+            token = strtok(NULL, delim);
             while( token != NULL ) {
-                printf( " %s\n", token ); 
+                printf( "%s ", token ); 
                 token = strtok(NULL, delim);
             }
         } else if (!strcmp(token, "wire")) {
+            token = strtok(NULL, delim);
             while( token != NULL ) {
-                printf( " %s\n", token ); 
+                printf( "%s ", token ); 
                 token = strtok(NULL, delim);
             }
         }

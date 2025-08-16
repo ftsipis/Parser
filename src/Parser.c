@@ -23,7 +23,7 @@ void parser() {
     char tmp[sizeof line];                                                      // tmp = line because strtok change the value of the first parameter and line shouldn't be changed
     int i=0, o=0, w=0;
 
-    /*Creation of the necessary structs*/
+    /*Creation of the IOW struct modules*/
     while (fgets(line, sizeof(line), fpointer)) {
         strcpy(tmp, line);
         token = strtok(tmp, delim);
@@ -60,6 +60,4 @@ void parser() {
             PrintIOW(wire, w);
         }
     }
-
-
 }

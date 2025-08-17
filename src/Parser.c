@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "Modules.h"
+
+int is_blank_line(char *line);
 
 
 void parser() {
@@ -21,10 +24,19 @@ void parser() {
     const char *delim =" ,;";                                                   // Characters for line seperation
     char *token;                                                                // The word saved each time from the line
     char tmp[sizeof line];                                                      // tmp = line because strtok change the value of the first parameter and line shouldn't be changed
-    int i=0, o=0, w=0;
+    int i=0, o=0, w=0, g=0, ounter=0;
+    char type[10], name[10];
+    int input, output;
 
-    /*Creation of the IOW struct modules*/
+
+    Gate *gate = malloc(g * sizeof(struct Gate));
+
+    /*Creation of the IOW and Gate struct modules*/
     while (fgets(line, sizeof(line), fpointer)) {
+        if (!is_blank_line (line)){
+            counter++;
+        }
+
         strcpy(tmp, line);
         token = strtok(tmp, delim);
         if (!strcmp(token, "input")) {
@@ -58,8 +70,21 @@ void parser() {
                 token = strtok(NULL, delim);
             }
             PrintIOW(wire, w);
+        } else if (counter > 2) {
+            if (strcmp(token, "\n")){
+                type[10] = token;
+                token = strtok(NULL, delim);
+                name[10] = token;
+                gate = CreateGate(gate, type, name, input,); // Πρέπει να το φτιίαξω κάπως ώστε να περνάω στην συνάρτηση το περιεχόμενο από τις παρενθέσεις
+            }
         }
     }
+}
 
-
+/*Check if line is blank and return 0 if it is*/
+int is_blank_line (char *line){
+    for (char *p = line; *p; p++){
+        if (!isspace((unsigned char) *p)) return 1;
+    }
+    return 0;
 }

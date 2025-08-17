@@ -3,4 +3,6 @@
 
 void parser();
 
+int is_blank_line (char *line);
+
 #endif

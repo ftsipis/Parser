@@ -24,4 +24,3 @@ module s27 ( GND, VDD, CK, G0, G1, G17, G2, G3 );
   OR2_X1 U20 ( .A1(n2), .A2(G1), .ZN(n6) );
   AND2_X1 U21 ( .A1(G17), .A2(G0), .ZN(G10) );
 endmodule
-

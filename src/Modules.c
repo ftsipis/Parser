@@ -43,6 +43,6 @@ struct Gate {
 };
 
 /*Function for creation of Gate modules*/
-struct Gate *gate (struct Gate *gate, char *type, char *name, int input, int output){
+struct Gate *CreateGate (struct Gate *gate, char *type, char *name, int input, int output){
 
 };

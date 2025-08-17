@@ -12,4 +12,13 @@ struct IOW *CreateIOW(IOW * iow, char *type, char *name, int number);
 
 void PrintIOW (struct IOW * iow, int number);
 
+typedef struct Gate {
+    char *type;
+    char *name;
+    int *input;
+    int output;
+} Gate;
+
+struct Gate *gate (struct Gate *gate, char *type, char *name, int input, int output);
+
 #endif

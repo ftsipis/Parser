@@ -33,3 +33,16 @@ void PrintIOW (struct IOW * iow, int number){
     
     printf("\n");
 }
+
+/*Struct for the Gates*/
+struct Gate {
+    char *type;
+    char *name;
+    int *input;
+    int output;
+};
+
+/*Function for creation of Gate modules*/
+struct Gate *gate (struct Gate *gate, char *type, char *name, int input, int output){
+
+};

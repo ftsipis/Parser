@@ -19,6 +19,6 @@ typedef struct Gate {
     int output;
 } Gate;
 
-struct Gate *CreateGate (struct Gate *gate, char *type, char *name, int input, int output);
+struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside);
 
 #endif

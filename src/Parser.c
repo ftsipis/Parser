@@ -6,6 +6,7 @@
 
 int is_blank_line(char *line);
 
+char *isolate (char *line);
 
 void parser() {
     char dir[256] = "/home/fotis/C/Parser/docs/";                              // The docs directory
@@ -24,10 +25,10 @@ void parser() {
     const char *delim =" ,;";                                                   // Characters for line seperation
     char *token;                                                                // The word saved each time from the line
     char tmp[sizeof line];                                                      // tmp = line because strtok change the value of the first parameter and line shouldn't be changed
-    int i=0, o=0, w=0, g=0, ounter=0;
-    char type[10], name[10];
-    int input, output;
-
+    int i=0, o=0, w=0, g=0, counter=0;                                          // i, o, w, g are counter for structs created and counter used for understanding when gates starts at .txt
+    char type[20], name[20];                                                    // Used for the creation of Gate modules
+    char *start, *end;                                                          // start and end are pointer to ( and ) used for gates in .txt
+    char *inside;                                                               // Is the context between the () in the .txt
 
     Gate *gate = malloc(g * sizeof(struct Gate));
 
@@ -72,10 +73,11 @@ void parser() {
             PrintIOW(wire, w);
         } else if (counter > 2) {
             if (strcmp(token, "\n")){
-                type[10] = token;
+                strcpy(type, token);
                 token = strtok(NULL, delim);
-                name[10] = token;
-                gate = CreateGate(gate, type, name, input,); // Πρέπει να το φτιίαξω κάπως ώστε να περνάω στην συνάρτηση το περιεχόμενο από τις παρενθέσεις
+                strcpy(name, token);
+                inside = isolate(line);
+                gate = CreateGate(gate, type, name, inside); // Υπάρχει θέμα με το endmodule στο τέλος του .txt
             }
         }
     }
@@ -87,4 +89,22 @@ int is_blank_line (char *line){
         if (!isspace((unsigned char) *p)) return 1;
     }
     return 0;
+}
+
+/*Isolates the text inside the () of the line*/
+char *isolate (char *line){
+    const char *start, *end;
+    static char inside[256];
+    
+    start = strchr(line, '(');
+    end = strchr(line, ';');
+    if (start && end && end > start){
+        size_t len = end - start - 1;                                           // length between ( and )
+        strncpy(inside, start+1, len);
+        inside[len] = '\0';
+        return inside;
+    } else {
+        printf("Parentheses not found!\n");
+        return NULL;
+    }
 }

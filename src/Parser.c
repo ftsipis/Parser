@@ -31,7 +31,10 @@ void parser() {
     char *inside;                                                               // Is the context between the () in the .txt
 
     Gate *gate = malloc(g * sizeof(struct Gate));
-
+    if (!gate) {
+        perror("malloc Gate");
+        exit(EXIT_FAILURE);  
+    }
     /*Creation of the IOW and Gate struct modules*/
     while (fgets(line, sizeof(line), fpointer)) {
         if (!is_blank_line (line)){
@@ -42,6 +45,10 @@ void parser() {
         token = strtok(tmp, delim);
         if (!strcmp(token, "input")) {
             IOW *input = malloc(i * sizeof(struct IOW));
+            if (!input) {
+                perror("malloc Input");
+                exit(EXIT_FAILURE);  
+            }
             token = strtok(NULL, delim);
             while( token != NULL && strcmp(token, "\n")) {
                 if (strcmp(token, "VDD") == 0 || strcmp(token, "GND") == 0 || strcmp(token, "CK") == 0) {
@@ -55,6 +62,10 @@ void parser() {
             PrintIOW(input, i);
         } else if (!strcmp(token, "output")) {
             IOW *output = malloc(o * sizeof(struct IOW));
+            if (!output) {
+                perror("malloc Output");
+                exit(EXIT_FAILURE);  
+            }            
             token = strtok(NULL, delim);
             while( token != NULL && strcmp(token, "\n")) {
                 o++;
@@ -64,6 +75,10 @@ void parser() {
             PrintIOW(output, o);
         } else if (!strcmp(token, "wire")) {
             IOW *wire = malloc(w * sizeof(struct IOW));
+            if (!wire) {
+                perror("malloc Wire");
+                exit(EXIT_FAILURE);  
+            }
             token = strtok(NULL, delim);
             while( token != NULL && strcmp(token, "\n")) {
                 w++;
@@ -72,15 +87,18 @@ void parser() {
             }
             PrintIOW(wire, w);
         } else if (counter > 2) {
-            if (strcmp(token, "\n")){
+            if (strcmp(token, "\n") && strcmp(line, "endmodule") != 0){
+                g++;
                 strcpy(type, token);
                 token = strtok(NULL, delim);
                 strcpy(name, token);
                 inside = isolate(line);
-                gate = CreateGate(gate, type, name, inside); // Υπάρχει θέμα με το endmodule στο τέλος του .txt
+                gate = CreateGate(gate, type, name, inside, g); 
             }
         }
     }
+    PrintGate(gate, g);
+
 }
 
 /*Check if line is blank and return 0 if it is*/

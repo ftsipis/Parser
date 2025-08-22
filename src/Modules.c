@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+
+int InputNumber (char *type);
 
 /*Struct for the inputs, outputs and wires*/
 struct IOW {
@@ -59,9 +62,10 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
     gate = tmp;
     strcpy(gate[number-1].type, type);
     strcpy(gate[number-1].name, name);
-    gate[number-1].input = malloc(1 * sizeof(int));
-    gate[number-1].input[0] = 0;
-    gate[number-1].output = 0;
+
+    int inNumber = InputNumber(gate[number-1].type);
+    gate[number-1].input = malloc(inNumber * sizeof(int));
+
     return gate;
 };
 
@@ -71,5 +75,24 @@ void PrintGate (struct Gate *gate, int number){
 
     for (int j=0; j<number; j++){
         printf("Gate_%d: Type=%s, Name=%s\n", j, gate[j].type, gate[j].name);
+    }
+}
+
+/*Find how many input every gate has from the gate type*/
+int InputNumber (char *type) {
+    int num;
+    if (!strcmp(type, "DFF_X1") || !strcmp(type, "INV_X1")) {
+        num = 1;
+        printf("Input Number = %d\n", num);
+        return num;
+    } else {
+        for (char *p=type; *p; p++){
+            if (isdigit((unsigned char)*p)){
+                num = atoi(p);
+                break;
+            }
+        }
+        printf("Input Number = %d\n", num);
+        return num;
     }
 }

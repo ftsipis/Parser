@@ -22,4 +22,6 @@ typedef struct Gate {
 struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside, int number);
 
 void PrintGate (struct Gate *gate, int number);
+
+int InputNumber (char *type);
 #endif

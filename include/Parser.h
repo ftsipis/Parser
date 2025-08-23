@@ -5,6 +5,6 @@ void parser();
 
 int is_blank_line (char *line);
 
-int is_blank_line (char *line);
+char *isolate (char *line);
 
 #endif

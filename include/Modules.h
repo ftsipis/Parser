@@ -24,4 +24,5 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
 void PrintGate (struct Gate *gate, int number);
 
 int InputNumber (char *type);
+
 #endif

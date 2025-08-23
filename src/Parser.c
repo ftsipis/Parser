@@ -3,10 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "Modules.h"
-
-int is_blank_line(char *line);
-
-char *isolate (char *line);
+#include "Parser.h"
 
 void parser() {
     char dir[256] = "/home/fotis/C/Parser/docs/";                              // The docs directory

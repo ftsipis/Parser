@@ -2,17 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-
-int InputNumber (char *type);
-
-/*Struct for the inputs, outputs and wires*/
-struct IOW {
-    char type[32];
-    char name[32];
-    int in;
-    int out;
-};
-
+#include "Modules.h"
 
 /*Function for creation of a IOW module*/
 struct IOW *CreateIOW(struct IOW * iow, char *type, char *name, int number) {
@@ -42,14 +32,6 @@ void PrintIOW (struct IOW * iow, int number){
     
     printf("\n");
 }
-
-/*Struct for the Gates*/
-struct Gate {
-    char type[32];
-    char name[32];
-    int *input;
-    int output;
-};
 
 /*Function for creation of Gate modules*/
 struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside, int number){

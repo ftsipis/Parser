@@ -25,4 +25,20 @@ void PrintGate (struct Gate *gate, int number);
 
 int InputNumber (char *type);
 
+typedef enum {
+    P_D,       // flip-flop input
+    P_Q,       // flip-flop output
+    P_QN,      // inverted flip-flop output
+    P_CK,      // clock
+    P_A,       // gate with 1 input
+    P_A1,      // gate input 1
+    P_A2,      // gate input 2
+    P_A3,      // gate input 3
+    P_A4,      // gate input 4
+    P_ZN,      // gate output
+    P_UNKNOWN
+} PortType;
+
+PortType get_port_type(const char *formal);
+
 #endif

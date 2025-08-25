@@ -53,6 +53,7 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
     char *token = strtok(tmp, delim);
     char *dot, *lpar, *rpar;
     char formal[10], net[10];
+    PortType pt;
 
     while (token != NULL) {
         if (strcmp(token, ")")) {
@@ -69,7 +70,24 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
                 size_t len2 = rpar - (lpar + 1);
                 strncpy(net, lpar + 1, len2);
                 net[len2] = '\0';                                           // Here I need to connect the IOs
+            
+                pt = get_port_type(formal);
 
+                switch (pt) {
+                case P_D:
+                case P_Q:
+                case P_QN:
+                case P_CK:
+                case P_A:
+                case P_A1:
+                case P_A2:
+                case P_A3:
+                case P_A4:
+                case P_ZN:
+                case P_UNKNOWN:
+                default:
+                    break;
+                }
             }
         }
         token = strtok(NULL, delim);
@@ -102,4 +120,19 @@ int InputNumber (char *type) {
         }
         return num;
     }
+}
+
+/*Returns the Port Type for the gate input*/
+PortType get_port_type(const char *formal) {
+    if (!formal) return P_UNKNOWN;
+    if (strcmp(formal, "D")  == 0)  return P_D;
+    if (strcmp(formal, "Q")  == 0)  return P_Q;
+    if (strcmp(formal, "QN") == 0)  return P_QN;
+    if (strcmp(formal, "CK") == 0)  return P_CK;
+    if (strcmp(formal, "A1") == 0)  return P_A1;
+    if (strcmp(formal, "A2") == 0)  return P_A2;
+    if (strcmp(formal, "A3") == 0)  return P_A3;
+    if (strcmp(formal, "A4") == 0)  return P_A4;
+    if (strcmp(formal, "ZN") == 0) return P_ZN;
+    return P_UNKNOWN;
 }

@@ -45,7 +45,7 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
     strcpy(gate[number-1].type, type);
     strcpy(gate[number-1].name, name);
 
-    int inNumber = InputNumber(gate[number-1].type);
+    int inNumber = InputNumber(type);
     gate[number-1].input = malloc(inNumber * sizeof(int));
     
     char *tmp = inside;
@@ -69,11 +69,11 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
                 size_t len2 = rpar - (lpar + 1);
                 strncpy(net, lpar + 1, len2);
                 net[len2] = '\0';                                           // Here I need to connect the IOs
+
             }
         }
         token = strtok(NULL, delim);
     }
-    printf("\n");
 
     return gate;
 };

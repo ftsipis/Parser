@@ -94,7 +94,7 @@ void parser() {
             }
         }
     }
-    PrintGate(gate, g);
+    //PrintGate(gate, g);
 
 }
 

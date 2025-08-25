@@ -69,7 +69,6 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
                 // copy net name (between '(' and ')')
                 size_t len2 = rpar - (lpar + 1);
                 strncpy(net, lpar + 1, len2);
-                net[len2] = '\0';                                           // Here I need to connect the IOs
             
                 pt = get_port_type(formal);
 

@@ -1,6 +1,7 @@
 #ifndef MODULES_H
 #define MODULES_H
 
+// Struct for Input Output and Wire
 typedef struct IOW {
     char type[10];
     char name[10];
@@ -12,6 +13,7 @@ struct IOW *CreateIOW(IOW * iow, char *type, char *name, int number);
 
 void PrintIOW (struct IOW * iow, int number);
 
+// Struct for Gate
 typedef struct Gate {
     char type[10];
     char name[10];
@@ -25,6 +27,7 @@ void PrintGate (struct Gate *gate, int number);
 
 int InputNumber (char *type);
 
+// Enum for Gate's input formal port type
 typedef enum {
     P_D,       // flip-flop input
     P_Q,       // flip-flop output

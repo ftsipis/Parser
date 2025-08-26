@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdint.h>
 #include "Modules.h"
 
 /*Function for creation of a IOW module*/
-struct IOW *CreateIOW(struct IOW * iow, char *type, char *name, int number) {
+struct IOW *CreateIOW(struct IOW * iow, char *type, char *name, size_t number) {
     struct IOW *tmp = realloc(iow, number * sizeof *iow);
     if (!tmp) {
         perror("realloc failed");
@@ -15,26 +16,25 @@ struct IOW *CreateIOW(struct IOW * iow, char *type, char *name, int number) {
     iow = tmp;
     strcpy(iow[number-1].type, type);
     strcpy(iow[number-1].name, name);
-    iow[number-1].in=0;
-    iow[number-1].out=0;
+    iow[number-1].value=0;
 
     return iow;
 }
 
 /*Print the values of the IOW modules*/
-void PrintIOW (struct IOW * iow, int number){
+void PrintIOW (struct IOW * iow, size_t number){
     printf("\n");
 
     printf("These are the data for all the %s modules!\n", iow[0].type);
     for (int j=0; j<number; j++){
-        printf("%s_%d: name=%s, input=%d, output=%d\n",iow[j].type, j, iow[j].name, iow[j].in, iow[j].out);
+        printf("%s_%d: name=%s, value=%d\n",iow[j].type, j, iow[j].name, iow[j].value);
     }
     
     printf("\n");
 }
 
 /*Function for creation of Gate modules*/
-struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside, int number, struct IOW *input, struct IOW *output, struct IOW *wire){
+struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside, size_t number, struct IOW *input, struct IOW *output, struct IOW *wire, size_t i, size_t o, size_t w){
     struct Gate *test = realloc(gate, number * sizeof *gate);
     if (!test) {
         perror("realloc failed");
@@ -49,11 +49,12 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
     gate[number-1].input = malloc(inNumber * sizeof(int));
     
     char *tmp = inside;
-    char *delim = " ,";
+    const char *delim = " ,";
     char *token = strtok(tmp, delim);
     char *dot, *lpar, *rpar;
     char formal[10], net[10];
     PortType pt;
+    NetLoc loc;
 
     while (token != NULL) {
         if (strcmp(token, ")")) {
@@ -73,16 +74,36 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
                 pt = get_port_type(formal);
 
                 switch (pt) {                           // Need to create a find_IOW function before finishing this
-                case P_D: gate[number-1].input[0] = 
+                case P_D:
+                    loc = find_net(input, i, output, o, wire, w, net);
+                    if (loc.cls != NET_NOTFOUND) gate[number-1].input[0] = &loc.ptr->value;
+                    break;  
                 case P_Q:
+                    loc = find_net(input, i, output, o, wire, w, net);
+                    if (loc.cls != NET_NOTFOUND) loc.ptr->value = gate[number-1].output;
+                    break;
                 case P_QN:
-                case P_CK: break;
+                    loc = find_net(input, i, output, o, wire, w, net);
+                    break;
                 case P_A:
+                    loc = find_net(input, i, output, o, wire, w, net);
+                    break;
                 case P_A1:
+                    loc = find_net(input, i, output, o, wire, w, net);
+                    break;
                 case P_A2:
+                    loc = find_net(input, i, output, o, wire, w, net);
+                    break;
                 case P_A3:
+                    loc = find_net(input, i, output, o, wire, w, net);
+                    break;
                 case P_A4:
+                    loc = find_net(input, i, output, o, wire, w, net);
+                    break;
                 case P_ZN:
+                    loc = find_net(input, i, output, o, wire, w, net);
+                    break;
+                case P_CK: break;
                 case P_UNKNOWN:
                 }
             }
@@ -94,7 +115,7 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
 }
 
 /*Print the values of Gate modules*/
-void PrintGate (struct Gate *gate, int number){
+void PrintGate (struct Gate *gate, size_t number){
     printf("\nThese are the data for all the Gate modules!\n");
 
     for (int j=0; j<number; j++){
@@ -130,11 +151,55 @@ PortType get_port_type(const char *formal) {
     if (strcmp(formal, "A2") == 0)  return P_A2;
     if (strcmp(formal, "A3") == 0)  return P_A3;
     if (strcmp(formal, "A4") == 0)  return P_A4;
-    if (strcmp(formal, "ZN") == 0) return P_ZN;
+    if (strcmp(formal, "ZN") == 0)  return P_ZN;
     return P_UNKNOWN;
 }
 
-/*Function which finds the correct IOW to connect with gate's IO*/
-struct IOW *find_IOW (struct IOW *input, struct IOW *output, struct IOW *wire) {
+/*Linear search in one IOW struct array. Returns SIZE_MAX if not found*/
+size_t iow_find_index (const IOW *arr, size_t n, char *name){
+    if (!arr || !name) return SIZE_MAX;
+    for (size_t i=0; i<n; i++){
+        if (strcmp(arr[i].name, name) == 0){
+            return i;
+        }
+    }
+    return SIZE_MAX;
+}
 
+/*Find in which IOW is the net stored*/
+NetLoc find_net (const IOW *input, size_t i,
+                const IOW *output, size_t o,
+                const IOW *wire, size_t w,
+                const char *name)
+{
+    NetLoc r = { .cls = NET_NOTFOUND, .index = 0, .ptr = NULL };
+    if (!name) return r;
+
+    size_t idx;
+
+    idx = iow_find_index (input, i, name);
+    if (idx != SIZE_MAX){
+        r.cls = NET_INPUT;
+        r.index = idx;
+        r.ptr = &input[idx];
+        return r;
+    }
+
+    idx = iow_find_index (output, o, name);
+    if (idx != SIZE_MAX){
+        r.cls = NET_OUTPUT;
+        r.index = idx;
+        r.ptr = &input[idx];
+        return r;
+    }
+
+    idx = iow_find_index (wire, w, name);
+    if (idx != SIZE_MAX){
+        r.cls = NET_WIRE;
+        r.index = idx;
+        r.ptr = &input[idx];
+        return r;
+    }
+
+    return r;
 }

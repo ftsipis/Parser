@@ -5,8 +5,7 @@
 typedef struct IOW {
     char type[10];
     char name[10];
-    int in;
-    int out;
+    int value;
 } IOW;
 
 struct IOW *CreateIOW(IOW * iow, char *type, char *name, int number);
@@ -21,7 +20,7 @@ typedef struct Gate {
     int output;
 } Gate;
 
-struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside, int number,  struct IOW *input, struct IOW *output, struct IOW *wire);
+struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside, int number,  struct IOW *input, struct IOW *output, struct IOW *wire, size_t InputNum, size_t OutputNum, size_t WireNum);
 
 void PrintGate (struct Gate *gate, int number);
 
@@ -43,5 +42,25 @@ typedef enum {
 } PortType;
 
 PortType get_port_type(const char *formal);
+
+typedef enum {
+    NET_INPUT,
+    NET_OUTPUT,
+    NET_WIRE,
+    NET_NOTFOUND
+} NetClass;
+
+typedef struct NetLoc {
+    NetClass cls;
+    size_t index;
+    const IOW *ptr;
+} NetLoc;
+
+size_t iow_find_index (const IOW *arr, size_t n, char *name);
+
+NetLoc find_net (IOW *input, size_t i,
+                IOW *output, size_t o,
+                IOW *wire, size_t w,
+                char *name);
 
 #endif

@@ -22,7 +22,7 @@ void parser() {
     const char *delim =" ,;";                                                   // Characters for line seperation
     char *token;                                                                // The word saved each time from the line
     char tmp[sizeof line];                                                      // tmp = line because strtok change the value of the first parameter and line shouldn't be changed
-    int i=0, o=0, w=0, g=0, counter=0;                                          // i, o, w, g are counter for structs created and counter used for understanding when gates starts at .txt
+    size_t i=0, o=0, w=0, g=0, counter=0;                                       // i, o, w, g are counter for structs created and counter used for understanding when gates starts at .txt
     char type[20], name[20];                                                    // Used for the creation of Gate modules
     char *start, *end;                                                          // start and end are pointer to ( and ) used for gates in .txt
     char *inside;                                                               // Is the context between the () in the .txt
@@ -50,7 +50,7 @@ void parser() {
         perror("malloc Wire");
         exit(EXIT_FAILURE);  
     }
-    
+
     /*Creation of the IOW and Gate struct modules*/
     while (fgets(line, sizeof(line), fpointer)) {
         if (!is_blank_line (line)){
@@ -94,7 +94,6 @@ void parser() {
                 token = strtok(NULL, delim);
                 strcpy(name, token);
                 inside = isolate(line);
-                gate = CreateGate(gate, type, name, inside, g, input, output, wire); 
             }
         }
     }

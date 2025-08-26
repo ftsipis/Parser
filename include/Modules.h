@@ -21,7 +21,7 @@ typedef struct Gate {
     int output;
 } Gate;
 
-struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside, int number);
+struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside, int number,  struct IOW *input, struct IOW *output, struct IOW *wire);
 
 void PrintGate (struct Gate *gate, int number);
 

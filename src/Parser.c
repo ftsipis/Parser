@@ -32,6 +32,25 @@ void parser() {
         perror("malloc Gate");
         exit(EXIT_FAILURE);  
     }
+
+    IOW *input = malloc(i * sizeof(struct IOW));
+    if (!input) {
+        perror("malloc Input");
+        exit(EXIT_FAILURE);  
+    }
+ 
+    IOW *output = malloc(o * sizeof(struct IOW));
+    if (!output) {
+        perror("malloc Output");
+        exit(EXIT_FAILURE);  
+    }  
+    
+    IOW *wire = malloc(w * sizeof(struct IOW));
+    if (!wire) {
+        perror("malloc Wire");
+        exit(EXIT_FAILURE);  
+    }
+    
     /*Creation of the IOW and Gate struct modules*/
     while (fgets(line, sizeof(line), fpointer)) {
         if (!is_blank_line (line)){
@@ -41,11 +60,6 @@ void parser() {
         strcpy(tmp, line);
         token = strtok(tmp, delim);
         if (!strcmp(token, "input")) {
-            IOW *input = malloc(i * sizeof(struct IOW));
-            if (!input) {
-                perror("malloc Input");
-                exit(EXIT_FAILURE);  
-            }
             token = strtok(NULL, delim);
             while( token != NULL && strcmp(token, "\n")) {
                 if (strcmp(token, "VDD") == 0 || strcmp(token, "GND") == 0 || strcmp(token, "CK") == 0) {
@@ -57,12 +71,7 @@ void parser() {
                 }
             }
             PrintIOW(input, i);
-        } else if (!strcmp(token, "output")) {
-            IOW *output = malloc(o * sizeof(struct IOW));
-            if (!output) {
-                perror("malloc Output");
-                exit(EXIT_FAILURE);  
-            }            
+        } else if (!strcmp(token, "output")) {          
             token = strtok(NULL, delim);
             while( token != NULL && strcmp(token, "\n")) {
                 o++;
@@ -71,11 +80,6 @@ void parser() {
             }
             PrintIOW(output, o);
         } else if (!strcmp(token, "wire")) {
-            IOW *wire = malloc(w * sizeof(struct IOW));
-            if (!wire) {
-                perror("malloc Wire");
-                exit(EXIT_FAILURE);  
-            }
             token = strtok(NULL, delim);
             while( token != NULL && strcmp(token, "\n")) {
                 w++;
@@ -90,7 +94,7 @@ void parser() {
                 token = strtok(NULL, delim);
                 strcpy(name, token);
                 inside = isolate(line);
-                gate = CreateGate(gate, type, name, inside, g); 
+                gate = CreateGate(gate, type, name, inside, g, input, output, wire); 
             }
         }
     }

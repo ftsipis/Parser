@@ -34,7 +34,7 @@ void PrintIOW (struct IOW * iow, int number){
 }
 
 /*Function for creation of Gate modules*/
-struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside, int number){
+struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside, int number, struct IOW *input, struct IOW *output, struct IOW *wire){
     struct Gate *test = realloc(gate, number * sizeof *gate);
     if (!test) {
         perror("realloc failed");
@@ -72,11 +72,11 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
             
                 pt = get_port_type(formal);
 
-                switch (pt) {
-                case P_D:
+                switch (pt) {                           // Need to create a find_IOW function before finishing this
+                case P_D: gate[number-1].input[0] = 
                 case P_Q:
                 case P_QN:
-                case P_CK:
+                case P_CK: break;
                 case P_A:
                 case P_A1:
                 case P_A2:
@@ -84,8 +84,6 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
                 case P_A4:
                 case P_ZN:
                 case P_UNKNOWN:
-                default:
-                    break;
                 }
             }
         }
@@ -93,7 +91,7 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
     }
 
     return gate;
-};
+}
 
 /*Print the values of Gate modules*/
 void PrintGate (struct Gate *gate, int number){
@@ -134,4 +132,9 @@ PortType get_port_type(const char *formal) {
     if (strcmp(formal, "A4") == 0)  return P_A4;
     if (strcmp(formal, "ZN") == 0) return P_ZN;
     return P_UNKNOWN;
+}
+
+/*Function which finds the correct IOW to connect with gate's IO*/
+struct IOW *find_IOW (struct IOW *input, struct IOW *output, struct IOW *wire) {
+
 }

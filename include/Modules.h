@@ -3,8 +3,8 @@
 
 // Struct for Input Output and Wire
 typedef struct IOW {
-    char type[10];
-    char name[10];
+    char type[32];
+    char name[32];
     int value;
 } IOW;
 
@@ -14,10 +14,11 @@ void PrintIOW (struct IOW * iow, int number);
 
 // Struct for Gate
 typedef struct Gate {
-    char type[10];
-    char name[10];
-    int *input;
-    int output;
+    char type[32];
+    char name[32];
+    int **input;
+    int *output;
+    size_t input_count;
 } Gate;
 
 struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside, int number,  struct IOW *input, struct IOW *output, struct IOW *wire, size_t InputNum, size_t OutputNum, size_t WireNum);
@@ -53,7 +54,7 @@ typedef enum {
 typedef struct NetLoc {
     NetClass cls;
     size_t index;
-    const IOW *ptr;
+    IOW *ptr;
 } NetLoc;
 
 size_t iow_find_index (const IOW *arr, size_t n, char *name);

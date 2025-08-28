@@ -45,8 +45,12 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
     strcpy(gate[number-1].type, type);
     strcpy(gate[number-1].name, name);
 
-    int inNumber = InputNumber(type);
-    gate[number-1].input = malloc(inNumber * sizeof(int));
+    gate[number-1].input_count = InputNumber(type);
+    gate[number-1].input = malloc(gate[number-1].input_count * sizeof*gate[number-1].input);
+    if (!gate[number-1].input) {
+        perror("malloc Input");
+        exit(EXIT_FAILURE);  
+    }
     
     char *tmp = inside;
     const char *delim = " ,";
@@ -73,38 +77,47 @@ struct Gate *CreateGate (struct Gate *gate, char *type, char *name, char *inside
             
                 pt = get_port_type(formal);
 
-                switch (pt) {                           // Need to create a find_IOW function before finishing this
+                switch (pt) {                           
                 case P_D:
                     loc = find_net(input, i, output, o, wire, w, net);
-                    if (loc.cls != NET_NOTFOUND) gate[number-1].input[0] = &loc.ptr->value;
+                    if (loc.cls != NET_NOTFOUND && gate[number-1].input_count > 0) gate[number-1].input[0] = &loc.ptr->value;
                     break;  
                 case P_Q:
                     loc = find_net(input, i, output, o, wire, w, net);
-                    if (loc.cls != NET_NOTFOUND) loc.ptr->value = gate[number-1].output;
+                    if (loc.cls != NET_NOTFOUND) gate[number-1].output = &loc.ptr->value;
                     break;
                 case P_QN:
                     loc = find_net(input, i, output, o, wire, w, net);
+                    if (loc.cls != NET_NOTFOUND) gate[number-1].output = &loc.ptr->value;
                     break;
                 case P_A:
                     loc = find_net(input, i, output, o, wire, w, net);
+                    if (loc.cls != NET_NOTFOUND && gate[number-1].input_count > 0) gate[number-1].input[0] = &loc.ptr->value;
                     break;
                 case P_A1:
                     loc = find_net(input, i, output, o, wire, w, net);
+                    if (loc.cls != NET_NOTFOUND && gate[number-1].input_count > 0) gate[number-1].input[0] = &loc.ptr->value;
                     break;
                 case P_A2:
                     loc = find_net(input, i, output, o, wire, w, net);
+                    if (loc.cls != NET_NOTFOUND && gate[number-1].input_count > 1) gate[number-1].input[1] = &loc.ptr->value;
                     break;
                 case P_A3:
                     loc = find_net(input, i, output, o, wire, w, net);
+                    if (loc.cls != NET_NOTFOUND && gate[number-1].input_count > 2) gate[number-1].input[2] = &loc.ptr->value;
                     break;
                 case P_A4:
                     loc = find_net(input, i, output, o, wire, w, net);
+                    if (loc.cls != NET_NOTFOUND && gate[number-1].input_count > 3) gate[number-1].input[3] = &loc.ptr->value;
                     break;
                 case P_ZN:
                     loc = find_net(input, i, output, o, wire, w, net);
+                    if (loc.cls != NET_NOTFOUND) gate[number-1].output = &loc.ptr->value;
                     break;
                 case P_CK: break;
-                case P_UNKNOWN:
+                case P_UNKNOWN: 
+                    fprintf(stderr, "Unknown port '%s'\n", formal);
+                    break;
                 }
             }
         }
